@@ -22,18 +22,18 @@ def ads_list(page=1):
 @app.route('/query')
 def query():
     session['args'] = dict(request.args)
-    return redirect(url_for('result'))
+    return redirect(url_for('query_result'))
 
 
-@app.route('/result', methods=['GET', 'POST'])
-@app.route('/result/<int:page>', methods=['GET', 'POST'])
-def result(page=1):
+@app.route('/query_result', methods=['GET', 'POST'])
+@app.route('/query_result/<int:page>', methods=['GET', 'POST'])
+def query_result(page=1):
     districts = get_districts_from_sql()
     parametres = session['args']
     ads = get_data_from_db(parametres)
     pagination = get_pagination(page, len(ads))
     return render_template('ads_list.html', ads=ads[MAX_PER_PAGE * (page - 1):MAX_PER_PAGE * page],
-                           districts=districts, pagination=pagination, result_page='result/', **parametres)
+                           districts=districts, pagination=pagination, result_page='query_result/', **parametres)
 
 
 def get_pagination(page, quantity):
