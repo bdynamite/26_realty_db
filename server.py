@@ -16,7 +16,7 @@ def ads_list(page=1):
     ads = get_data_from_db()
     pagination = get_pagination(page, len(ads))
     return render_template('ads_list.html', ads=ads[MAX_PER_PAGE * (page - 1):MAX_PER_PAGE * page],
-                           districts=districts, pagination=pagination, result='')
+                           districts=districts, pagination=pagination, result_page='')
 
 
 @app.route('/query')
@@ -33,7 +33,7 @@ def result(page=1):
     ads = get_data_from_db(parametres)
     pagination = get_pagination(page, len(ads))
     return render_template('ads_list.html', ads=ads[MAX_PER_PAGE * (page - 1):MAX_PER_PAGE * page],
-                           districts=districts, pagination=pagination, result='result/', **parametres)
+                           districts=districts, pagination=pagination, result_page='result/', **parametres)
 
 
 def get_pagination(page, quantity):
@@ -46,9 +46,9 @@ def get_districts_from_sql():
     main_cities = ('Череповец', 'поселок городского типа Шексна', 'Вологда')
     districts = []
     def_dict = defaultdict(list)
-    result = db.session.query(Flats.settlement).group_by(Flats.settlement).all()
-    for item in result:
-        city = item[0]
+    settlements = db.session.query(Flats.settlement).group_by(Flats.settlement).all()
+    for settlement in settlements:
+        city = settlement[0]
         if city in main_cities:
             districts.append(city)
         else:
@@ -56,7 +56,7 @@ def get_districts_from_sql():
                 if word[0].isupper():
                     def_dict[word[0]].append(city)
                     break
-    districts.extend(sorted([i for i in def_dict.items()], key=lambda x: x[0]))
+    districts.extend(sorted([city for city in def_dict.items()], key=lambda x: x[0]))
     return districts
 
 

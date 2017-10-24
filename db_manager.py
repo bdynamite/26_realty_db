@@ -6,7 +6,7 @@ from app import db
 
 
 class Flats(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    flat_id = db.Column(db.Integer, primary_key=True)
     has_balcony = db.Column(db.Boolean)
     oblast_district = db.Column(db.Text(120))
     construction_year = db.Column(db.Integer)

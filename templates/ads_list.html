@@ -115,19 +115,19 @@
                       {% if pagination.active_page == pagination.pages_list[0] %}
                       <li class="disabled"><span>«</span></li>
                       {% else %}
-                      <li><a href="{{ result ~ (pagination.active_page - 1) }}" role="submit">«</a></li>
+                      <li><a href="{{ result_page ~ (pagination.active_page - 1) }}" role="submit">«</a></li>
                       {% endif %}
                       {% for page in pagination.pages_list %}
                       {% if page == pagination.active_page %}
                       <li class="active"><span>{{ page }}<span class="sr-only">(current)</span></span></li>
                       {% else %}
-                      <li><a href="{{ result ~ page }}" role="submit">{{ page }}</a></li>
+                      <li><a href="{{ result_page ~ page }}" role="submit">{{ page }}</a></li>
                       {% endif %}
                       {% endfor %}
                       {% if pagination.active_page == pagination.pages_list[-1] %}
                       <li class="disabled"><span>»</span></li>
                       {% else %}
-                      <li><a href="{{ result ~ (pagination.active_page + 1) }}" role="submit">»</a></li>
+                      <li><a href="{{ result_page ~ (pagination.active_page + 1) }}" role="submit">»</a></li>
                       {% endif %}
                     </ul>
                   </div>
