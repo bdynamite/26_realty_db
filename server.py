@@ -31,16 +31,16 @@ def get_districts_from_sql():
 
 
 def get_data_from_db(parameters):
-    flats = db.session.query(Flat).filter(Flat.active==1)
+    flats = db.session.query(Flat).filter(Flat.active == 1)
     if parameters:
         if parameters['oblast_district'] not in ('all', ''):
-            flats = flats.filter(Flat.settlement==parameters['oblast_district'])
+            flats = flats.filter(Flat.settlement == parameters['oblast_district'])
         if parameters['min_price']:
-            flats = flats.filter(Flat.price>=int(parameters['min_price']))
+            flats = flats.filter(Flat.price >= int(parameters['min_price']))
         if parameters['max_price']:
-            flats = flats.filter(Flat.price<=int(parameters['max_price']))
+            flats = flats.filter(Flat.price <= int(parameters['max_price']))
         if 'new_building' in parameters:
-            flats = flats.filter(Flat.under_construction==1 or datetime.now().year - Flat.construction_year < 3)
+            flats = flats.filter(Flat.under_construction == 1 or datetime.now().year - Flat.construction_year < 3)
     flats = flats.all()
     return flats
 

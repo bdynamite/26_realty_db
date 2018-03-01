@@ -39,7 +39,7 @@ def get_json_data(file_path):
 
 
 def add_record_in_db(flat):
-    if not 'active' in flat:
+    if 'active' not in flat:
         flat['active'] = True
     table_columns = list(db.Model.metadata.tables['flats'].columns)
     new_record = Flat(**{x.name: flat[x.name] for x in table_columns})
@@ -50,7 +50,7 @@ def add_record_in_db(flat):
 def check_inactive_records(flats_id):
     db_id = [db_item[0] for db_item in db.session.query(Flat.id).all()]
     inactive_id = set(db_id).difference(set(flats_id))
-    inactive_flats = db.session.query(Flat).filter(Flat.id.in_(inactive_id)).filter(Flat.active == True).all()
+    inactive_flats = db.session.query(Flat).filter(Flat.id.in_(inactive_id)).filter_by(active=True).all()
     for flat in inactive_flats:
         flat.active = False
     db.session.commit()
@@ -63,10 +63,8 @@ def update_db(file_path):
 
 
 if __name__ == '__main__':
-    parser = create_parser()
-    if parser.filepath:
-        update_db(parser.filepath)
+    args = create_parser()
+    if args.filepath:
+        update_db(args.filepath)
     else:
         create_db()
-
-
