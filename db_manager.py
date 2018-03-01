@@ -5,13 +5,13 @@ import os
 from app import db
 
 
-class Flats(db.Model):
-    flat_id = db.Column(db.Integer, primary_key=True)
+class Flat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     has_balcony = db.Column(db.Boolean)
-    oblast_district = db.Column(db.Text(120))
+    oblast_district = db.Column(db.Text(120), index=True)
     construction_year = db.Column(db.Integer)
     description = db.Column(db.Text(1000))
-    settlement = db.Column(db.Text(100))
+    settlement = db.Column(db.Text(100), index=True)
     rooms_number = db.Column(db.Integer)
     living_area = db.Column(db.Float)
     address = db.Column(db.Text(100))
@@ -38,15 +38,28 @@ def get_json_data(file_path):
         return json.load(file_handler)
 
 
+def add_record_in_db(flat):
+    if not 'active' in flat:
+        flat['active'] = True
+    table_columns = list(db.Model.metadata.tables['flats'].columns)
+    new_record = Flat(**{x.name: flat[x.name] for x in table_columns})
+    db.session.add(new_record)
+    db.session.commit()
+
+
+def check_inactive_records(flats_id):
+    db_id = [db_item[0] for db_item in db.session.query(Flat.id).all()]
+    inactive_id = set(db_id).difference(set(flats_id))
+    inactive_flats = db.session.query(Flat).filter(Flat.id.in_(inactive_id)).filter(Flat.active == True).all()
+    for flat in inactive_flats:
+        flat.active = False
+    db.session.commit()
+
+
 def update_db(file_path):
     flats = get_json_data(file_path)
-    for flat in flats:
-        if not 'active' in flat:
-            flat['active'] = True
-        table_columns = list(db.Model.metadata.tables['flats'].columns)
-        new_record = Flats(**{x.name: flat[x.name] for x in table_columns})
-        db.session.add(new_record)
-        db.session.commit()
+    [add_record_in_db(flat) for flat in flats]
+    check_inactive_records([flat['id'] for flat in flats])
 
 
 if __name__ == '__main__':

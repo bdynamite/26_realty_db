@@ -31,29 +31,21 @@
         <div class="col-md-9">
           <div class="row">
             <div class="col-sm-4">
-              <form role="form" action="/query" class="panel panel-default" method="GET">
+              <form role="form" action="/" class="panel panel-default" method="GET">
                 <div class="panel-body">
                   <p>город / районный центр</p>
                   <div class="form-group">
                     <select name="oblast_district" class="form-control">
                       <option value="all">Все</option>
                       {% for district in districts %}
-                      {% if district is string %}
-                      <option value="{{ district }}" {% if oblast_district == [district,] %} selected {% endif %}>{{ district }}</option>
-                      {% else %}
-                      <optgroup label="{{ district[0] }}">
-                        {% for city in district[1] %}
-                        <option value="{{ city }}" {% if oblast_district == [city,] %} selected {% endif %}>{{ city }}</option>
-                        {% endfor %}
-                      </optgroup>
-                      {% endif %}
+                      <option value="{{ district }}" {% if args.oblast_district == district %} selected {% endif %}>{{ district }}</option>
                       {% endfor %}
                     </select>
                   </div>
                   <div class="form-group ">
                     <div class="checkbox">
                       <label>
-                        <input type="checkbox" name="new_building" value="True" {% if new_building %} checked {% endif %}>
+                        <input type="checkbox" name="new_building" value="True" {% if args.new_building %} checked {% endif %}>
                         только новостройки
                       </label>
                     </div>
@@ -62,14 +54,14 @@
                   <div class="form-group">
                     <div class="input-group">
                       <span class="input-group-addon">от</span>
-                      <input autocomplete="off" type="text" name="min_price" class="form-control js-price-format" placeholder="любая" {% if min_price %} value="{{ min_price[0] }}" {% endif %}>
+                      <input autocomplete="off" type="text" name="min_price" class="form-control js-price-format" placeholder="любая" {% if args.min_price %} value="{{ min_price[0] }}" {% endif %}>
                       <span class="input-group-addon">р.</span>
                     </div>
                   </div>
                   <div class="form-group ">
                     <div class="input-group">
                       <span class="input-group-addon">до</span>
-                      <input autocomplete="off" type="text" name="max_price" class="form-control js-price-format" placeholder="любая" {% if max_price %} value="{{ max_price[0] }}" {% endif %}>
+                      <input autocomplete="off" type="text" name="max_price" class="form-control js-price-format" placeholder="любая" {% if args.max_price %} value="{{ max_price[0] }}" {% endif %}>
                       <span class="input-group-addon">р.</span>
                     </div>
                   </div>
@@ -109,29 +101,29 @@
                   </div>
                   <hr>
                 {% endfor %}
-                <div class="panel-body">
-                  <div class="clearfix">
-                    <ul class="pagination pull-right">
-                      {% if pagination.active_page == pagination.pages_list[0] %}
-                      <li class="disabled"><span>«</span></li>
-                      {% else %}
-                      <li><a href="{{ result_page ~ (pagination.active_page - 1) }}" role="submit">«</a></li>
-                      {% endif %}
-                      {% for page in pagination.pages_list %}
-                      {% if page == pagination.active_page %}
-                      <li class="active"><span>{{ page }}<span class="sr-only">(current)</span></span></li>
-                      {% else %}
-                      <li><a href="{{ result_page ~ page }}" role="submit">{{ page }}</a></li>
-                      {% endif %}
-                      {% endfor %}
-                      {% if pagination.active_page == pagination.pages_list[-1] %}
-                      <li class="disabled"><span>»</span></li>
-                      {% else %}
-                      <li><a href="{{ result_page ~ (pagination.active_page + 1) }}" role="submit">»</a></li>
-                      {% endif %}
-                    </ul>
+                  <div class="panel-body">
+                    <div class="clearfix">
+                      <ul class="pagination pull-right">
+                        {% if pagination.active_page == pagination.pages_list[0] %}
+                        <li class="disabled"><span>«</span></li>
+                        {% else %}
+                        <li><a href="{{ url_for('ads_list', page=pagination.active_page - 1, **args) }}">«</a></li>
+                        {% endif %}
+                        {% for page in pagination.pages_list %}
+                        {% if page == pagination.active_page %}
+                        <li class="active"><span>{{ page }}<span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a href="{{ url_for('ads_list', page=page, **args) }}">{{ page }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if pagination.active_page == pagination.pages_list[-1] %}
+                        <li class="disabled"><span>»</span></li>
+                        {% else %}
+                        <li><a href="{{ url_for('ads_list', page=pagination.active_page + 1, **args) }}">»</a></li>
+                        {% endif %}
+                      </ul>
+                    </div>
                   </div>
-                </div>
               </div>
             </div>
           </div>
