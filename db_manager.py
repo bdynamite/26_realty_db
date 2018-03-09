@@ -8,14 +8,14 @@ from app import db
 class Flat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     has_balcony = db.Column(db.Boolean)
-    oblast_district = db.Column(db.Text(120), index=True)
+    oblast_district = db.Column(db.Text(120))
     construction_year = db.Column(db.Integer)
     description = db.Column(db.Text(1000))
-    settlement = db.Column(db.Text(100), index=True)
+    settlement = db.Column(db.String(100), index=True)
     rooms_number = db.Column(db.Integer)
     living_area = db.Column(db.Float)
     address = db.Column(db.Text(100))
-    price = db.Column(db.Integer)
+    price = db.Column(db.Integer, index=True)
     premise_area = db.Column(db.Float)
     under_construction = db.Column(db.Boolean)
     active = db.Column(db.Boolean)
@@ -55,7 +55,7 @@ def check_inactive_records(flats_id):
         flat.active = False
     db.session.commit()
 
-
+ 
 def update_db(file_path):
     flats = get_json_data(file_path)
     [add_record_in_db(flat) for flat in flats]
