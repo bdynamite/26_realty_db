@@ -11,11 +11,11 @@ class Flat(db.Model):
     oblast_district = db.Column(db.Text(120))
     construction_year = db.Column(db.Integer)
     description = db.Column(db.Text(1000))
-    settlement = db.Column(db.String(100), index=True)
+    settlement = db.Column(db.String(100))
     rooms_number = db.Column(db.Integer)
     living_area = db.Column(db.Float)
     address = db.Column(db.Text(100))
-    price = db.Column(db.Integer, index=True)
+    price = db.Column(db.Integer)
     premise_area = db.Column(db.Float)
     under_construction = db.Column(db.Boolean)
     active = db.Column(db.Boolean)
@@ -28,7 +28,11 @@ def create_parser():
 
 
 def create_db():
+    engine = db.get_engine()
     db.create_all()
+    db.Index('idx_settlement', Flat.settlement).create(engine)
+    db.Index('idx_price', Flat.price).create(engine)
+    db.Index('idx_construction_year', Flat.construction_year).create(engine)
 
 
 def get_json_data(file_path):
@@ -55,7 +59,7 @@ def check_inactive_records(flats_id):
         flat.active = False
     db.session.commit()
 
- 
+
 def update_db(file_path):
     flats = get_json_data(file_path)
     [add_record_in_db(flat) for flat in flats]
