@@ -31,8 +31,7 @@ def create_db():
     engine = db.get_engine()
     db.create_all()
     db.Index('idx_settlement', Flat.settlement).create(engine)
-    db.Index('idx_price', Flat.price).create(engine)
-    db.Index('idx_construction_year', Flat.construction_year).create(engine)
+    db.Index('idx_active', Flat.active).create(engine)
 
 
 def get_json_data(file_path):
@@ -45,7 +44,7 @@ def get_json_data(file_path):
 def add_record_in_db(flat):
     if 'active' not in flat:
         flat['active'] = True
-    table_columns = list(db.Model.metadata.tables['flats'].columns)
+    table_columns = list(db.Model.metadata.tables['flat'].columns)
     new_record = Flat(**{x.name: flat[x.name] for x in table_columns})
     db.session.add(new_record)
     db.session.commit()
