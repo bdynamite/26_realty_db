@@ -31,7 +31,7 @@ def create_db():
     engine = db.get_engine()
     db.create_all()
     db.Index('idx_settlement', Flat.settlement).create(engine)
-    db.Index('idx_active', Flat.active).create(engine)
+    db.Index('idx_active', Flat.active, Flat.settlement, Flat.price).create(engine)
 
 
 def get_json_data(file_path):
